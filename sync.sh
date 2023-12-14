@@ -14,7 +14,7 @@ for FILE in $CHANGED_FILES; do
     continue
   fi
 
-  # .md拡張子を削除してダイル名を取得
+  # .md拡張子を削除してファイル名を取得
   FILE_NAME=$(basename $FILE .md)
 
   # ファイル名と同じファイルがqiita/public配下に存在しない場合だけ、npx qiita newを実行
@@ -28,8 +28,3 @@ for FILE in $CHANGED_FILES; do
   #  scriptを実行
   ./node_modules/.bin/ts-node scripts/ztoq.ts "$FILE" "qiita/public/$FILE_NAME.md"
 done
-
-# GitHubにpush
-git add .
-git commit -m "[Bot] Update articles"
-git push
