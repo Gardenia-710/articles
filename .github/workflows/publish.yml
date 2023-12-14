@@ -39,7 +39,7 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed."
-            if [ !$file =~ ^articles/ ]; then
+            if [ ! $file =~ ^articles/ ]; then
               continue
             fi
             $file_name=$(basename $file .md)
