@@ -42,7 +42,7 @@ jobs:
             if [[ ! $file =~ ^articles/ ]]; then
               continue
             fi
-            $file_name=$(basename $file .md)
+            file_name=$(basename $file .md)
             if [[ ! -e "./qiita/public/$file_name.md" ]]; then
               cd ./qiita
               echo "npx qiita new $file_name"
