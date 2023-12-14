@@ -35,6 +35,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v40
       - name: Sync zenn adn qiita
+        if: ${{ contains(steps.changed-files.outputs.all_changed_files, '.md') }}
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed."
