@@ -6,7 +6,8 @@ on:
     branches:
       - main
     paths:
-      - 'qiita/**'
+      - 'articles/**'
+      - 'books/**'
   workflow_dispatch:
 
 permissions:
