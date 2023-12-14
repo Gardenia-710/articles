@@ -39,11 +39,11 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed."
-            if [ ! $file =~ ^articles/ ]; then
+            if [[ ! $file =~ ^articles/ ]]; then
               continue
             fi
             $file_name=$(basename $file .md)
-            if [ ! -e "./qiita/public/$file_name.md" ]; then
+            if [[ ! -e "./qiita/public/$file_name.md" ]]; then
               cd ./qiita
               echo "npx qiita new $file_name"
               npx qiita new $file_name
