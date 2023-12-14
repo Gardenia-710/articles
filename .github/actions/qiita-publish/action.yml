@@ -8,7 +8,7 @@ inputs:
   github-token:
     required: true
     description: 'GitHub token'
-  rootdir:
+  root:
     required: false
     description: 'Root directory of qiita articles'
 
@@ -19,18 +19,18 @@ runs:
       with:
         node-version: '18.16.0'
     - name: Install qiita-cli
-      run: npm install -g @qiita/qiita-cli@v0.3.0
+      run: npm install -g @qiita/qiita-cli@v1.3.0
       shell: bash
     - name: Publish articles
       run: qiita publish --all
       env:
         QIITA_TOKEN: ${{ inputs.qiita-token }}
-        QIITA_CLI_ITEMS_ROOT: ${{ inputs.rootdir }}
+        QIITA_CLI_ITEMS_ROOT: ${{ inputs.root }}
       shell: bash
     - name: Commit
       run: |
-        if [[ -n "${{ inputs.rootdir }}" ]]; then
-          git add ${{ inputs.rootdir }}/public/*
+        if [[ -n "${{ inputs.root }}" ]]; then
+          git add ${{ inputs.root }}/public/*
         else
           git add public/*
         fi
