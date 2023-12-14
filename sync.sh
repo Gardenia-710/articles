@@ -8,9 +8,9 @@ for FILE in $CHANGED_FILES; do
   # 変更があったファイルのパスを表示
   echo "Changed file path: $FILE"
 
-  # ファイルのパスがarticle配下ではない場合処理をスキップ
-  if [[ ! $FILE =~ ^article/ ]]; then
-    echo "Skip"
+  # ファイルのパスがarticles配下ではない場合処理をスキップ
+  if [[ ! $FILE =~ ^articles/ ]]; then
+    echo "Skip: $FILE"
     continue
   fi
 
