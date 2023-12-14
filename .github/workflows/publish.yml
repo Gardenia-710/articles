@@ -52,7 +52,7 @@ jobs:
             ./node_modules/.bin/ts-node ./scripts/ztoq.ts "$file" "./qiita/public/$file_name.md"
           done
       - name: Publish articles
-        run: qiita publish --all
+        run: npx qiita publish --all
         env:
           QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
           QIITA_CLI_ITEMS_ROOT: ./qiita
