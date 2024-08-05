@@ -1,77 +1,77 @@
 # Please set 'QIITA_TOKEN' secret to your repository
-name: Publish articles
+# name: Publish articles
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'articles/**'
-  workflow_dispatch:
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - 'articles/**'
+#   workflow_dispatch:
 
-permissions:
-  contents: write
+# permissions:
+#   contents: write
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: false
 
-jobs:
-  publish_articles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install dependencies
-        run: |
-          npm install
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v40
-      - name: Sync zenn adn qiita
-        if: contains(steps.changed-files.outputs.all_changed_files, '.md')
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed."
-            if [[ ! $file =~ ^articles/ ]]; then
-              continue
-            fi
-            file_name=$(basename $file .md)
-            if [[ ! -e "./qiita/public/$file_name.md" ]]; then
-              cd ./qiita
-              echo "npx qiita new $file_name"
-              npx qiita new $file_name
-              cd ../
-            fi
-            ./node_modules/.bin/ts-node ./scripts/ztoq.ts "$file" "./qiita/public/$file_name.md"
-          done
-      - name: Publish articles
-        run: npx qiita publish --all
-        env:
-          QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
-          QIITA_CLI_ITEMS_ROOT: ./qiita
-        shell: bash
-      - name: Commit
-        run: |
-          if [[ -n "./qiita" ]]; then
-            git add ./qiita/public/*
-          else
-            git add public/*
-          fi
-          if ! git diff --staged --exit-code --quiet; then
-            git config --global user.name 'github-actions[bot]'
-            git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m '[skip ci] Updated by qiita-cli'
-          fi
-        shell: bash
-      - name: Push
-        uses: CasperWA/push-protected@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+# jobs:
+#   publish_articles:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 5
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+#       - name: Install dependencies
+#         run: |
+#           npm install
+#       - name: Get changed files
+#         id: changed-files
+#         uses: tj-actions/changed-files@v40
+#       - name: Sync zenn adn qiita
+#         if: contains(steps.changed-files.outputs.all_changed_files, '.md')
+#         run: |
+#           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+#             echo "$file was changed."
+#             if [[ ! $file =~ ^articles/ ]]; then
+#               continue
+#             fi
+#             file_name=$(basename $file .md)
+#             if [[ ! -e "./qiita/public/$file_name.md" ]]; then
+#               cd ./qiita
+#               echo "npx qiita new $file_name"
+#               npx qiita new $file_name
+#               cd ../
+#             fi
+#             ./node_modules/.bin/ts-node ./scripts/ztoq.ts "$file" "./qiita/public/$file_name.md"
+#           done
+#       - name: Publish articles
+#         run: npx qiita publish --all
+#         env:
+#           QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
+#           QIITA_CLI_ITEMS_ROOT: ./qiita
+#         shell: bash
+#       - name: Commit
+#         run: |
+#           if [[ -n "./qiita" ]]; then
+#             git add ./qiita/public/*
+#           else
+#             git add public/*
+#           fi
+#           if ! git diff --staged --exit-code --quiet; then
+#             git config --global user.name 'github-actions[bot]'
+#             git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+#             git commit -m '[skip ci] Updated by qiita-cli'
+#           fi
+#         shell: bash
+#       - name: Push
+#         uses: CasperWA/push-protected@v2
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: main
